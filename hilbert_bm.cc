@@ -36,18 +36,12 @@ void BM_cs(benchmark::State& state){
 
 }
 
-size_t t {10};
-size_t reps {4};
+std::size_t t {10};
+std::size_t reps {4};
 
 BENCHMARK(BM)->Unit(benchmark::kSecond)->MinTime(t)->Repetitions(reps)->ReportAggregatesOnly(true);
 BENCHMARK(BM_256_manual)->Unit(benchmark::kSecond)->MinTime(t)->Repetitions(reps)->ReportAggregatesOnly(true);
 BENCHMARK(BM_16)->Unit(benchmark::kSecond)->MinTime(t)->Repetitions(reps)->ReportAggregatesOnly(true);
 BENCHMARK(BM_cs)->Unit(benchmark::kSecond)->MinTime(t)->Repetitions(reps)->ReportAggregatesOnly(true);
-
-/*
-BENCHMARK(BM)->Unit(benchmark::kSecond)->Iterations(3);
-BENCHMARK(BM_256_manual)->Unit(benchmark::kSecond)->Iterations(3);
-BENCHMARK(BM_16)->Unit(benchmark::kSecond)->Iterations(3);
-*/
 
 BENCHMARK_MAIN();
