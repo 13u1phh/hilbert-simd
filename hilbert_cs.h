@@ -31,10 +31,10 @@ std::vector<int32_t> make_table_cs(){
 		indices = _mm512_or_epi32(indices, padding);
 	}
 
-	const __m512i unshuffle_mask_1 = _mm512_setzero_si512();
-	const __m512i unshuffle_mask_2 = _mm512_setzero_si512();
-	const __m512i unshuffle_mask_4 = _mm512_setzero_si512();
-	const __m512i unshuffle_mask_8 = _mm512_setzero_si512();
+	const __m512i unshuffle_mask_1 = _mm512_set1_epi32(0x22222222);
+	const __m512i unshuffle_mask_2 = _mm512_set1_epi32(0x0c0c0c0c);
+	const __m512i unshuffle_mask_4 = _mm512_set1_epi32(0x00f000f0);
+	const __m512i unshuffle_mask_8 = _mm512_set1_epi32(0x0000ff00);
 
 	for(uint64_t b {}; b < num_indices / 16; b++){
 
