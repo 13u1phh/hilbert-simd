@@ -104,12 +104,3 @@ std::vector<int32_t> make_table_cs(){
 	return table;
 }
 
-/*
-int main(){
-	auto table = make_table(16);
-
-	volatile uint32_t x = table[0];
-
-	delete[] table;
-}
-*/
