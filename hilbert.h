@@ -139,7 +139,6 @@ std::vector<uint32_t> make_table(){
 				}
 
 				_mm512_storeu_si512(reinterpret_cast<__m512i*>(table.data() + m*256 + block*16), coords_block);
-				// _mm512_storeu_si512((__m512i*)(&table[m*256 + block*16]), coords_block);
 
 			}(), ...);
 

@@ -25,9 +25,6 @@ std::vector<uint32_t> make_table_256_manual(){
 
 	__m512i packed_cm;
 
-	// this logic breaks down if order = 1 I think - should just do a compile-time check and return 0, 1, (1 << 16) | 1, 1 << 16
-	// in general need to think about how partial unroll interacts with table size/padding
-
 	if constexpr (order & 1) {
 		constexpr uint32_t padding_scalar = 0b01 << (2*order);
 		constexpr uint32_t cm_scalar = (1 << order) - 1;
