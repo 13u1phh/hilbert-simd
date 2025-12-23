@@ -1,26 +1,12 @@
 VENV=venv
 PYTHON=${VENV}/bin/python3
 
-.PHONY: hilbert_debug hilbert hilbert_test hilbert_bm run_bm clean
-
-bin/hilbert_debug: hilbert.cc hilbert.h luts.h gen_vec_macros.py make_luts.py
-	mkdir -p bin
-	${PYTHON} gen_vec_macros.py > luts.h
-	g++ hilbert.cc --std=c++20 -mavx512vbmi -g -o bin/hilbert_debug
-
-hilbert_debug: bin/hilbert_debug
-
-bin/hilbert: hilbert.cc hilbert.h luts.h gen_vec_macros.py make_luts.py
-	mkdir -p bin
-	${PYTHON} gen_vec_macros.py > luts.h
-	g++ hilbert.cc -O3 --std=c++20 -mavx512vbmi -o bin/hilbert
-
-hilbert: bin/hilbert
+.PHONY: hilbert_test hilbert_bm run_bm clean
 
 bin/hilbert_test: hilbert_test.cc hilbert.h luts.h gen_vec_macros.py make_luts.py hilbert_ref_impl.cc hilbert_ref_impl.h 
 	mkdir -p bin
 	${PYTHON} gen_vec_macros.py > luts.h
-	g++ hilbert_test.cc hilbert_ref_impl.cc --std=c++20 -mavx512vbmi -o bin/hilbert_test
+	g++ hilbert_test.cc hilbert_ref_impl.cc --std=c++20 -mavx512vbmi -g -o bin/hilbert_test
 
 hilbert_test: bin/hilbert_test
 
