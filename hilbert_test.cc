@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "hilbert.h"
+#include "hilbert_cs.h"
 #include "hilbert_ref_impl.h"
 
 int main(){
@@ -14,6 +15,7 @@ int main(){
 			std::cout << "ORDER: " << order << std::endl;
 
 			std::vector<uint32_t> table = make_table<order>();
+			std::vector<uint32_t> table_cs = make_table_cs<order>();
 			std::vector<uint32_t> table_ref = make_table_ref(order);
 
 			uint64_t dim = 1 << order;
@@ -22,10 +24,16 @@ int main(){
 			for(uint64_t i {}; i < num_indices; i++){
 				if (table[i] != table_ref[i]){
 					std::cout << "Test failed for index " << i << std::endl;
-					std::cout << "Actual: " << table[i] << std::endl;
-					std::cout << "Ref: " << table_ref[i] << std::endl;
+					std::cout << "From megablock algorithm: " << table[i] << std::endl;
+					std::cout << "From ref: " << table_ref[i] << std::endl;
 					break;
 
+				}
+				else if(table_cs[i] != table_ref[i]){
+					std::cout << "Test failed for index " << i << std::endl;
+					std::cout << "From complement-and-swap algorithm: " << table_cs[i] << std::endl;
+					std::cout << "From ref: " << table_ref[i] << std::endl;
+					break;
 				}
 
 			}

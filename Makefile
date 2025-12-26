@@ -3,7 +3,7 @@ PYTHON=${VENV}/bin/python3
 
 .PHONY: hilbert_test hilbert_bm run_bm clean
 
-bin/hilbert_test: hilbert_test.cc hilbert.h luts.h gen_vec_macros.py make_luts.py hilbert_ref_impl.cc hilbert_ref_impl.h 
+bin/hilbert_test: hilbert_test.cc hilbert.h luts.h gen_vec_macros.py make_luts.py hilbert_cs.h hilbert_ref_impl.cc hilbert_ref_impl.h 
 	mkdir -p bin
 	${PYTHON} gen_vec_macros.py > luts.h
 	g++ hilbert_test.cc hilbert_ref_impl.cc --std=c++20 -mavx512vbmi -g -o bin/hilbert_test
