@@ -2,16 +2,20 @@
 #include <iostream>
 #include <utility>
 #include <vector>
+#include <cstdlib>
 
 #include "hilbert.h"
 #include "hilbert_cs.h"
 #include "hilbert_ref_impl.h"
 
-int main(){
+int main(int argc, char** argv){
+	uint64_t max_order = (argc > 1) ? std::atoi(argv[1]) : 16;
 
 	[&]<std::size_t... Is>(std::index_sequence<Is... >){
 		([&] {
-			constexpr uint64_t order = (uint64_t)(Is + 1);
+			constexpr uint64_t order = static_cast<uint64_t>(Is + 1);
+
+			if (order > max_order) return;
 			std::cout << "ORDER: " << order << std::endl;
 
 			std::vector<uint32_t> table = make_table<order>();

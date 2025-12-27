@@ -10,6 +10,9 @@ bin/hilbert_test: hilbert_test.cc hilbert.h luts.h gen_vec_macros.py make_luts.p
 
 hilbert_test: bin/hilbert_test
 
+fast_test: hilbert_test
+	./bin/hilbert_test 13
+
 BMDIR=benchmark
 BMBUILD=${BMDIR}/build
 BMLIB=${BMBUILD}/src/libbenchmark.a
@@ -30,7 +33,7 @@ bin/hilbert_bm: hilbert_bm.cc hilbert.h hilbert_256_manual.h hilbert_16.h hilber
 
 hilbert_bm: bin/hilbert_bm
 
-run_bm: hilbert_bm
+bm: hilbert_bm
 	taskset -c 1 ./bin/hilbert_bm
 
 clean:
