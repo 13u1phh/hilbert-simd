@@ -80,26 +80,6 @@ std::vector<uint32_t> make_table_cs(){
 
 		// Unshuffle
 
-		/*
-
-		// Quartile size: 1
-
-		__m512i coords_shr = _mm512_srli_epi32(coords, 1);
-		__m512i quartiles_xor = _mm512_ternarylogic_epi32(unshuffle_mask_1, coords, coords_shr, a_bits & (b_bits ^ c_bits));
-
-		__m512i quartiles_xor_shl = _mm512_slli_epi32(quartiles_xor, 1);
-		coords = _mm512_ternarylogic_epi32(coords, quartiles_xor_shl, quartiles_xor, a_bits ^ b_bits ^ c_bits);
-
-		// Quartile size: 2
-
-		coords_shr = _mm512_srli_epi32(coords, 2);
-		quartiles_xor = _mm512_ternarylogic_epi32(unshuffle_mask_2, coords, coords_shr, a_bits & (b_bits ^ c_bits));
-
-		quartiles_xor_shl = _mm512_slli_epi32(quartiles_xor, 2);
-		coords = _mm512_ternarylogic_epi32(coords, quartiles_xor_shl, quartiles_xor, a_bits ^ b_bits ^ c_bits);
-		
-		*/
-
 		coords = _mm512_gf2p8affine_epi64_epi8(coords, unshuffle_matrix_1_2, 0); 
 
 		// Quartile size: 4
