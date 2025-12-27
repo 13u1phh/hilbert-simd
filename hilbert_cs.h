@@ -35,19 +35,31 @@ std::vector<uint32_t> make_table_cs(){
 		indices = _mm512_or_epi32(indices, padding);
 	}
 
-	const __m512i unshuffle_mask_1 = _mm512_set1_epi32(0x22222222);
-	const __m512i unshuffle_mask_2 = _mm512_set1_epi32(0x0c0c0c0c);
+	/*
+
+	In a GFNI affine transform, each byte within a 64-bit lane uses the corresponding 64-bit matrix in the transform vector.
+	The matrix is applied to each byte in big-endian order i.e. LS bit of the result byte is determined by MS byte of the matrix.
+
+	Our desired unshuffle (in little-endian order) is: x0 y0 x1 y1 x2 y2 x3 y3 --> x0 x1 x2 x3 y0 y1 y2 y3.
+	Then, the corresponding matrix bytes are: 01 04 10 40 02 08 20 80
+
+	Again, these bytes are in big-endian order, so our matrix is: 0x0104104002082080.
+
+	*/
+
+	const __m512i unshuffle_matrix_1_2 = _mm512_set1_epi64(0x0104104002082080);
+
+	// const __m512i unshuffle_mask_1 = _mm512_set1_epi32(0x22222222);
+	// const __m512i unshuffle_mask_2 = _mm512_set1_epi32(0x0c0c0c0c);
 	const __m512i unshuffle_mask_4 = _mm512_set1_epi32(0x00f000f0);
 	const __m512i unshuffle_mask_8 = _mm512_set1_epi32(0x0000ff00);
 
 	for(uint64_t b {}; b < num_indices/16; b++){
 
-		__m512i coords = indices;
-
-		__m512i coords_shl = _mm512_srli_epi32(coords, 1);
+		__m512i coords_shl = _mm512_srli_epi32(indices, 1);
 		__m512i sr = _mm512_and_epi32(coords_shl, evens_mask);
 
-		__m512i coords_evens = _mm512_and_epi32(coords, evens_mask);
+		__m512i coords_evens = _mm512_and_epi32(indices, evens_mask);
 		__m512i cs = _mm512_xor_epi32(_mm512_add_epi32(coords_evens, sr), evens_mask);
 
 		cs = _mm512_xor_si512(cs, _mm512_srli_epi32(cs,  2 ));
@@ -60,15 +72,15 @@ std::vector<uint32_t> make_table_cs(){
 		__m512i cs_shr = _mm512_srli_epi32(cs, 1);
 		__m512i comp = _mm512_and_epi32(cs_shr, evens_mask);
 
-		__m512i t = _mm512_ternarylogic_epi32(coords, swap, comp, (a_bits & b_bits) ^ c_bits);
+		__m512i t = _mm512_ternarylogic_epi32(indices, swap, comp, (a_bits & b_bits) ^ c_bits);
 
 		__m512i t_shl = _mm512_slli_epi32(t, 1);
 
-		coords = _mm512_xor_epi32(coords, _mm512_ternarylogic_epi32(sr, t, t_shl, a_bits ^ b_bits ^ c_bits));
+		__m512i coords = _mm512_xor_epi32(indices, _mm512_ternarylogic_epi32(sr, t, t_shl, a_bits ^ b_bits ^ c_bits));
 
 		// Unshuffle
 
-		/* TO DO: replace first two unshuffles with a GNFI affine transform */
+		/*
 
 		// Quartile size: 1
 
@@ -85,13 +97,17 @@ std::vector<uint32_t> make_table_cs(){
 
 		quartiles_xor_shl = _mm512_slli_epi32(quartiles_xor, 2);
 		coords = _mm512_ternarylogic_epi32(coords, quartiles_xor_shl, quartiles_xor, a_bits ^ b_bits ^ c_bits);
+		
+		*/
+
+		coords = _mm512_gf2p8affine_epi64_epi8(coords, unshuffle_matrix_1_2, 0); 
 
 		// Quartile size: 4
 
-		coords_shr = _mm512_srli_epi32(coords, 4);
-		quartiles_xor = _mm512_ternarylogic_epi32(unshuffle_mask_4, coords, coords_shr, a_bits & (b_bits ^ c_bits));
+		__m512i coords_shr = _mm512_srli_epi32(coords, 4);
+		__m512i quartiles_xor = _mm512_ternarylogic_epi32(unshuffle_mask_4, coords, coords_shr, a_bits & (b_bits ^ c_bits));
 
-		quartiles_xor_shl = _mm512_slli_epi32(quartiles_xor, 4);
+		__m512i quartiles_xor_shl = _mm512_slli_epi32(quartiles_xor, 4);
 		coords = _mm512_ternarylogic_epi32(coords, quartiles_xor_shl, quartiles_xor, a_bits ^ b_bits ^ c_bits);
 
 		// Quartile size: 8
