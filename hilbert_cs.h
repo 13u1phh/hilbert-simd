@@ -49,8 +49,6 @@ std::vector<uint32_t> make_table_cs(){
 
 	const __m512i unshuffle_matrix_1_2 = _mm512_set1_epi64(0x0104104002082080);
 
-	// const __m512i unshuffle_mask_1 = _mm512_set1_epi32(0x22222222);
-	// const __m512i unshuffle_mask_2 = _mm512_set1_epi32(0x0c0c0c0c);
 	const __m512i unshuffle_mask_4 = _mm512_set1_epi32(0x00f000f0);
 	const __m512i unshuffle_mask_8 = _mm512_set1_epi32(0x0000ff00);
 
