@@ -29,7 +29,7 @@ ${BMLIB}: ${BMDIR}/.git
 bin/hilbert_bm: hilbert_bm.cc hilbert.h hilbert_256_manual.h hilbert_16.h hilbert_cs.h luts.h gen_vec_macros.py make_luts.py ${BMLIB} 
 	mkdir -p bin
 	${PYTHON} gen_vec_macros.py > luts.h
-	g++ hilbert_bm.cc -isystem ${BMDIR}/include ${BMLIB} -lpthread --std=c++20 -mavx512vbmi -O3 -o bin/hilbert_bm
+	g++ hilbert_bm.cc -isystem ${BMDIR}/include ${BMLIB} -lpthread --std=c++20 -mavx512vbmi -mgfni -O3 -o bin/hilbert_bm
 
 hilbert_bm: bin/hilbert_bm
 
