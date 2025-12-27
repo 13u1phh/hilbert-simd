@@ -1,7 +1,7 @@
 VENV=venv
 PYTHON=${VENV}/bin/python3
 
-.PHONY: hilbert_test hilbert_bm run_bm clean
+.PHONY: hilbert_test fast_test hilbert_bm bm clean
 
 bin/hilbert_test: hilbert_test.cc hilbert.h luts.h gen_vec_macros.py make_luts.py hilbert_cs.h hilbert_ref_impl.cc hilbert_ref_impl.h 
 	mkdir -p bin
